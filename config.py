@@ -21,7 +21,7 @@ from libqtile.config import Screen
 from libqtile import bar, widget, qtile
 
 ## ScratchPad and DropDown
-#from libqtile.config import ScratchPad 
+# from libqtile.config import ScratchPad, Dropdown
 
 ## Spotify
 #from spotify import Spotify
@@ -376,18 +376,23 @@ keys = [
     # Switch between column layout and max layout  
     # Column layout
     Key([mod], "e", lazy.group.setlayout("max"), desc="set layout to max"),
-    Key([mod], "w", lazy.group.setlayout("columns"), desc="set layout to max"),
-    Key([mod], "t", lazy.group.setlayout("treetab"), desc="set layout to max"),
+    Key([mod], "w", lazy.group.setlayout("columns"), desc="set layout to column"),
+    Key([mod], "t", lazy.group.setlayout("treetab"), desc="set layout to treetab"),
+    Key([mod], "b", lazy.group.setlayout("bsp"), desc="set layout to bsp"),
+
+    # Swap windows
+    Key([mod, "shift"], "h", lazy.layout.swap_left(), desc="Swap the window to left in tile layout"),
+    Key([mod, "shift"], "l", lazy.layout.swap_right(), desc="swap the window to right in tile layout"),    
 
 
-    # Modes: Reize
+    # Modes: Resize
     KeyChord(
         [mod, "shift"],
         "r",
         [
             Key([], "Left", lazy.layout.grow_left()),
             Key([], "Right", lazy.layout.grow_right()),
-            Key([], "Down", lazy.layout.grow_down()),
+            Key([], "Down", lazy.layout.grow_down()), 
             Key([], "Up", lazy.layout.grow_up()),
         ],
         mode=True,
@@ -421,6 +426,7 @@ mouse = [
 
 ## Groups ------------------------------
 groups = [Group(i) for i in "12345678"]
+
 
 for i in groups:
     keys.extend(
@@ -464,6 +470,20 @@ var_font_name = "JetBrainsMono Nerd Font"
 
 layouts = [
     # Extension of the Stack layout
+    # Layout inspired by bspwm
+    layout.Bsp(
+        border_focus=var_active_color,
+        border_normal=var_normal_color,
+        border_on_single=False,
+        border_width=var_border_width,
+        fair=True,
+        grow_amount=10,
+        lower_right=True,
+        margin=var_margin,
+        margin_on_single=None,
+        ratio=1.6,
+        wrap_clients=False,
+    ),
     layout.Columns(
         border_focus=var_active_color,
         border_normal=var_normal_color,
@@ -487,20 +507,6 @@ layouts = [
         border_width=var_border_width,
         margin=0,
     ),
-    # Layout inspired by bspwm
-    layout.Bsp(
-        border_focus=var_active_color,
-        border_normal=var_normal_color,
-        border_on_single=False,
-        border_width=var_border_width,
-        fair=True,
-        grow_amount=10,
-        lower_right=True,
-        margin=var_margin,
-        margin_on_single=None,
-        ratio=1.6,
-        wrap_clients=False,
-    ),
     # This layout divides the screen into a matrix of equally sized cells and places one window in each cell.
     layout.Matrix(
         border_focus=var_active_color,
@@ -510,22 +516,11 @@ layouts = [
         margin=var_margin,
     ),
     # Emulate the behavior of XMonad's default tiling scheme.
-    layout.MonadTall(
-        align=0,
-        border_focus=var_active_color,
-        border_normal=var_normal_color,
-        border_width=var_border_width,
-        change_ratio=0.05,
-        change_size=20,
-        margin=var_margin,
-        max_ratio=0.75,
-        min_ratio=0.25,
-        min_secondary_size=85,
-        new_client_position="after_current",
-        ratio=0.5,
-        single_border_width=None,
-        single_margin=None,
-    ),
+    # layout.MonadTall(
+    #     border_focus=var_active_color,
+    # ),   
+    
+    
     # Emulate the behavior of XMonad's ThreeColumns layout.
     layout.MonadThreeCol(
         align=0,
